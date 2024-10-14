@@ -1,0 +1,12 @@
+[Unit]
+Description=Nginx Service
+After=network.target
+Wants=network.target
+
+[Service]
+ExecStart=/usr/sbin/nginx -g 'daemon off;'
+Restart=on-failure
+RestartSec=5s
+
+[Install]
+WantedBy=multi-user.target

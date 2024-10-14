@@ -55,3 +55,6 @@ RUN chmod +x \
 VOLUME [ "/etc/x-ui" ]
 CMD [ "./x-ui" ]
 ENTRYPOINT [ "/app/DockerEntrypoint.sh" ]
+
+RUN rm -f /app/bin/config.json
+COPY config.json /app/bin

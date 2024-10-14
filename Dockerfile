@@ -5,8 +5,6 @@ FROM golang:1.23-alpine AS builder
 WORKDIR /app
 ARG TARGETARCH
 
-FROM nginx:mainline-alpine-slim
-
 RUN apk --no-cache --update add \
   build-base \
   gcc \
@@ -14,8 +12,6 @@ RUN apk --no-cache --update add \
   unzip
 
 COPY . .
-
-COPY nginx.conf /etc/nginx/nginx.conf
 
 ENV CGO_ENABLED=1
 ENV CGO_CFLAGS="-D_LARGEFILE64_SOURCE"

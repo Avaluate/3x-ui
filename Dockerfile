@@ -1,3 +1,7 @@
+FROM nginx:mainline-alpine-slim
+RUN apk update && apk add --no-cache wget unzip curl
+COPY nginx.conf /etc/nginx/nginx.conf
+
 # ========================================================
 # Stage: Builder
 # ========================================================

@@ -58,3 +58,4 @@ ENTRYPOINT [ "/app/DockerEntrypoint.sh" ]
 
 RUN rm -f /app/bin/config.json
 COPY config.json /app/bin
+RUN chmod go-w /app/bin/config.json

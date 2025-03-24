@@ -23,6 +23,46 @@
       "settings": {
         "address": "127.0.0.1"
       }
+    },
+    {
+      "allocate": {
+        "concurrency": 3,
+        "refresh": 5,
+        "strategy": "always"
+      },
+      "listen": null,
+      "port": 2054,
+      "protocol": "vmess",
+      "settings": {
+        "clients": [
+          {
+            "email": "1el06vh6",
+            "id": "05dbd9f8-6f64-4a03-8fcc-117a88a71cc4"
+          }
+        ]
+      },
+      "sniffing": {
+        "destOverride": [
+          "http",
+          "tls",
+          "quic",
+          "fakedns"
+        ],
+        "enabled": false,
+        "metadataOnly": false,
+        "routeOnly": false
+      },
+      "streamSettings": {
+        "network": "ws",
+        "security": "none",
+        "wsSettings": {
+          "acceptProxyProtocol": false,
+          "headers": {},
+          "host": "",
+          "path": "/vmess"
+        }
+      },
+      "tag": "inbound-2054"
     }
   ],
   "outbounds": [

@@ -47,48 +47,45 @@
         "allocate": null
       },
       {
-        "allocate": {
-          "concurrency": 3,
-          "refresh": 5,
-          "strategy": "always"
-        },
-        "listen": null,
-        "port": 56419,
-        "protocol": "vless",
-        "settings": {
-          "clients": [
-            {
-              "email": "testdd",
-              "flow": "",
-              "id": "97d6683b-8b35-41f6-b7a7-90803b26a3a3"
-            }
-          ],
-          "decryption": "none",
-          "fallbacks": []
-        },
-        "sniffing": {
-          "destOverride": [
-            "http",
-            "tls",
-            "quic",
-            "fakedns"
-          ],
-          "enabled": false,
-          "metadataOnly": false,
-          "routeOnly": false
-        },
-        "streamSettings": {
-          "network": "tcp",
-          "security": "none",
-          "tcpSettings": {
-            "acceptProxyProtocol": false,
-            "header": {
-              "type": "none"
-            }
+      "allocate": {
+        "concurrency": 3,
+        "refresh": 5,
+        "strategy": "always"
+      },
+      "listen": null,
+      "port": 2054,
+      "protocol": "vmess",
+      "settings": {
+        "clients": [
+          {
+            "email": "asxoxl5f",
+            "id": "9417bab9-1346-4cc3-8a76-493eecc99e2d"
           }
-        },
-        "tag": "inbound-56419"
-      }
+        ]
+      },
+      "sniffing": {
+        "destOverride": [
+          "http",
+          "tls",
+          "quic",
+          "fakedns"
+        ],
+        "enabled": false,
+        "metadataOnly": false,
+        "routeOnly": false
+      },
+      "streamSettings": {
+        "network": "ws",
+        "security": "none",
+        "wsSettings": {
+          "acceptProxyProtocol": false,
+          "headers": {},
+          "host": "",
+          "path": "/vmess"
+        }
+      },
+      "tag": "inbound-2054"
+    }
     ],
     "outbounds": [
       {

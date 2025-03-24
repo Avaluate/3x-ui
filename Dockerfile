@@ -1,44 +1,27 @@
-FROM nginx:mainline-alpine-slim
-RUN apk update && apk add --no-cache wget unzip curl
-COPY nginx.conf /etc/nginx/nginx.conf
+FROM nginx:mainline-alpine-slim AS builder
 
-# ========================================================
-# Stage: Builder
-# ========================================================
-FROM golang:1.23-alpine AS builder
+# Install necessary tools
+RUN apk update && apk add --no-cache wget unzip curl build-base gcc
+
+# --------------------------------------------------------
+# Nginx Configuration (Move to builder stage)
+# --------------------------------------------------------
+COPY nginx.conf /etc/nginx/nginx.conf
+# --------------------------------
+# Golang Compilation
+# --------------------------------
 WORKDIR /app
 ARG TARGETARCH
 
-RUN apk --no-cache --update add \
-  build-base \
-  gcc \
-  wget \
-  unzip
-
+# Install necessary packages
 COPY . .
 
 ENV CGO_ENABLED=1
 ENV CGO_CFLAGS="-D_LARGEFILE64_SOURCE"
+
+# Build the go application
 RUN go build -o build/x-ui main.go
 RUN ./DockerInit.sh "$TARGETARCH"
-
-# ========================================================
-# Stage: Final Image of 3x-ui
-# ========================================================
-FROM alpine
-ENV TZ=Asia/Tehran
-WORKDIR /app
-
-RUN apk add --no-cache --update \
-  ca-certificates \
-  tzdata \
-  fail2ban \
-  bash
-
-COPY --from=builder /app/build/ /app/
-COPY --from=builder /app/DockerEntrypoint.sh /app/
-COPY --from=builder /app/x-ui.sh /usr/bin/x-ui
-COPY config.json /app/bin
 
 # Configure fail2ban
 RUN rm -f /etc/fail2ban/jail.d/alpine-ssh.conf \
@@ -47,15 +30,33 @@ RUN rm -f /etc/fail2ban/jail.d/alpine-ssh.conf \
   && sed -i "s/^\[sshd\]$/&\nenabled = false/" /etc/fail2ban/jail.local \
   && sed -i "s/#allowipv6 = auto/allowipv6 = auto/g" /etc/fail2ban/fail2ban.conf
 
+# =====================================================
+# Start New Stage
+# =====================================================
+FROM nginx:mainline-alpine-slim
+
+ENV TZ=Asia/Tehran
+
+RUN apk add --no-cache --update \
+    ca-certificates \
+    tzdata \
+    fail2ban \
+    bash
+
+COPY --from=builder /etc/nginx/nginx.conf /etc/nginx/nginx.conf
+COPY --from=builder /app/build/ /app/
+COPY --from=builder /app/DockerEntrypoint.sh /app/
+COPY --from=builder /app/x-ui.sh /usr/bin/x-ui
+COPY --from=builder /app/config.json /app/bin
+
+# Set permissions and entrypoint
 RUN chmod +x \
-  /app/DockerEntrypoint.sh \
-  /app/x-ui \
-  /usr/bin/x-ui
+    /app/DockerEntrypoint.sh \
+    /app/x-ui \
+    /usr/bin/x-ui
 
-VOLUME [ "/etc/x-ui" ]
-CMD [ "./x-ui" ]
-ENTRYPOINT [ "/app/DockerEntrypoint.sh" ]
+VOLUME ["/etc/x-ui"]
+CMD ["./x-ui"]
+ENTRYPOINT ["/app/DockerEntrypoint.sh"]
 
-# RUN rm -f /app/bin/config.json
-# COPY config.json /app/bin
 RUN chmod go-w /app/bin/config.json
